@@ -89,7 +89,7 @@ def available(username, proxies={}, twitter=False, is_404=False):
     else:
         request = requests.post(
                     'https://github.com/signup_check/username',
-                    username,
+                    'value=' + username,
                     proxies=proxies
                 )
         if request.status_code == 403:
