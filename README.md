@@ -32,7 +32,7 @@ do
     if [[ $(echo i | python nitwit.py -m no -d - -s) == "i" ]]; then
         while true
         do
-            tput bel;
+            tput bel
             sleep 5
         done
     fi
