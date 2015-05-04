@@ -62,6 +62,10 @@ do
 done
 ```
 # Usage details
+Display help:
+```
+python nitwit.py -h
+```
 Source Twitter search with `/usr/share/dict/words`, writing live stats to `stderr` and available handles to `nitwits.txt`:
 ```
 python nitwit.py >nitwits.txt
