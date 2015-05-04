@@ -44,6 +44,7 @@ _error_429 = ('{service}\'s spouting 429s; too many requests are being made '
               'of the server. Wait a while, or download Tor '
               '(https://www.torproject.org/), set up a SOCKS5 proxy, and '
               'specify its port at the command line with "-p".')
+_max_twitter_username_length = 15
 
 def available(username, proxies={}, twitter=False, is_404=False):
     """ Checks if Twitter/Github username is available.
@@ -120,6 +121,11 @@ def write_available_usernames(words, suppress_status=False, proxy=None,
 
         No return value.
     """
+    # Username length restrictions go here
+    def length_criteria(word): return (
+            not twitter
+            or twitter and len(word) <= _max_twitter_username_length
+        )
     if proxy is None:
         proxies = {}
     else:
@@ -135,15 +141,21 @@ def write_available_usernames(words, suppress_status=False, proxy=None,
     for k, word in enumerate(words):
         to_write = None
         if maybe == -1:
-            if available(word, proxies=proxies, twitter=twitter, is_404=True):
+            if (length_criteria(word) and available(
+                            word, proxies=proxies, twitter=twitter, is_404=True
+                        )):
                 to_write = [word]
                 if not available(word, proxies=proxies, twitter=twitter):
                     to_write.append('m')
         elif maybe == 0:
-            if available(word, proxies=proxies, twitter=twitter, is_404=True):
+            if (length_criteria(word) and available(
+                            word, proxies=proxies, twitter=twitter, is_404=True
+                        )):
                 to_write = [word]
         elif maybe == 1:
-            if available(word, proxies=proxies, twitter=twitter):
+            if (length_criteria(word) and available(
+                            word, proxies=proxies, twitter=twitter
+                        )):
                 to_write = [word]
         if to_write is not None:
             print '\t'.join(to_write)
@@ -206,6 +218,10 @@ if __name__ == '__main__':
     if args.wait < 0:
         raise ValueError('Wait time ("--wait", "-w") must take a value > 0, '
                          'but {} was entered.'.format(args.wait))
+    if args.maybe not in ['annotate', 'yes', 'no']:
+        raise RuntimeError('Maybe argument ("--maybe", "-m") must be one '
+                           'of {"annotate", "yes", "no"}, '
+                           'but {} was entered'.format(args.maybe))
     if args.dictionary == '-':
         if sys.stdin.isatty():
             raise RuntimeError('stdin was specified as the dictionary, but no '
@@ -215,11 +231,13 @@ if __name__ == '__main__':
         write_available_usernames((line.strip().split('\t')[0] for line
                                         in sys.stdin),
                                     suppress_status=args.suppress_status,
-                                    proxy=args.proxy)
-    if args.maybe not in ['annotate', 'yes', 'no']:
-        raise RuntimeError('Maybe argument ("--maybe", "-m") must be one '
-                           'of {"annotate", "yes", "no"}, '
-                           'but {} was entered'.format(args.maybe))
+                                    proxy=args.proxy,
+                                    wait=args.wait,
+                                        maybe=(-1 if args.maybe == 'annotate'
+                                                else (0 if args.maybe == 'yes'
+                                                    else 1)
+                                                    ),
+                                        twitter=(not args.github))
     elif not os.path.isfile(args.dictionary):
         raise RuntimeError(
                 '"{}" is not a valid dictionary file. Try again.'.format(
@@ -239,3 +257,5 @@ if __name__ == '__main__':
                                                     ),
                                         twitter=(not args.github)
                                     )
+    if not args.suppress_status:
+        sys.stderr.write('\r\n')
