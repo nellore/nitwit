@@ -219,9 +219,9 @@ if __name__ == '__main__':
         raise ValueError('Wait time ("--wait", "-w") must take a value > 0, '
                          'but {} was entered.'.format(args.wait))
     if args.maybe not in ['annotate', 'yes', 'no']:
-        raise RuntimeError('Maybe argument ("--maybe", "-m") must be one '
-                           'of {"annotate", "yes", "no"}, '
-                           'but {} was entered'.format(args.maybe))
+        raise ValueError('Maybe argument ("--maybe", "-m") must be one '
+                         'of {"annotate", "yes", "no"}, '
+                         'but {} was entered'.format(args.maybe))
     if args.dictionary == '-':
         if sys.stdin.isatty():
             raise RuntimeError('stdin was specified as the dictionary, but no '
