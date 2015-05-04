@@ -2,7 +2,7 @@
 """
 nitwit
 
-Searches Twitter for usernames from word list. Reads words from 
+Searches Twitter/Github for usernames from word list. Reads words from 
 /usr/share/dict/words by default. Requires the requests library.
 
 Licensed under the MIT License.
@@ -40,13 +40,13 @@ import sys
 import time
 import urllib
 
-_error_429 = ('Twitter\'s spouting 429s; too many requests are being made of '
-              'the server. Wait a while, or download Tor '
+_error_429 = ('{service}\'s spouting 429s; too many requests are being made '
+              'of the server. Wait a while, or download Tor '
               '(https://www.torproject.org/), set up a SOCKS5 proxy, and '
               'specify its port at the command line with "-p".')
 
-def available(username, proxies={}, is_404=False):
-    """ Checks if Twitter username is available.
+def available(username, proxies={}, twitter=False, is_404=False):
+    """ Checks if Twitter/Github username is available.
 
         username: string with username
         proxies: keyword argument "proxies" of requests.get()
@@ -55,31 +55,57 @@ def available(username, proxies={}, is_404=False):
 
         Return value: True if username is available; else False.
     """
-    if is_404:
-        request = requests.get(
-                    'http://twitter.com/' + urllib.quote_plus(username),
-                    proxies=proxies
-                )
-        if request.status_code == 429:
-            raise RuntimeError(_error_429)
-        return (request.status_code == 404)
-    else:
+    if twitter:
+        if is_404:
+            request = requests.get(
+                        'http://twitter.com/' + urllib.quote_plus(username),
+                        proxies=proxies
+                    )
+            if request.status_code == 429:
+                raise RuntimeError(_error_429.format(service='Twitter'))
+            return (request.status_code == 404)
         request = requests.get(
                     'http://twitter.com/users/username_available?username='
                     + urllib.quote_plus(username),
                     proxies=proxies
                 )
-    try:
-        to_return = request.json()['valid']
-    except ValueError:
+        try:
+            to_return = request.json()['valid']
+        except ValueError:
+            if request.status_code == 429:
+                raise RuntimeError(_error_429.format(service='Twitter'))
+            raise
+        return to_return
+    # Github
+    if is_404:
+        request = requests.get(
+                    'http://github.com/' + urllib.quote_plus(username),
+                    proxies=proxies
+                )
         if request.status_code == 429:
-            raise RuntimeError(_error_429)
-        raise
-    return to_return
+            raise RuntimeError(_error_429.format(service='Github'))
+        return (request.status_code == 404)
+    else:
+        request = requests.post(
+                    'https://github.com/signup_check/username',
+                    username,
+                    proxies=proxies
+                )
+        if request.status_code == 403:
+            return False
+        elif request.status_code == 200:
+            return True
+        elif request.status_code == 429:
+            raise RuntimeError(_error_429.format(service='Github'))
+    # Should not get here
+    raise RuntimeError('{} encountered checking username {} on Github.'.format(
+                                    request.status_code, username
+                                )
+                    )
 
 def write_available_usernames(words, suppress_status=False, proxy=None,
-                                wait=0.25, maybe=-1):
-    """ Writes word if it is an available Twitter username.
+                                wait=0.25, maybe=-1, twitter=False):
+    """ Writes word if it is an available Twitter/Github username.
 
         words: iterable of words
         suppress_status: True if stats on search should not be printed to
@@ -104,20 +130,20 @@ def write_available_usernames(words, suppress_status=False, proxy=None,
         status_stream = sys.stderr
     found = 0
     min_word_length = None
-    error_string = ('\x1b[Kmin word length found: {min_word_length} || '
-                    'words found: {found} || last word searched: {word}\r')
+    error_string = ('\x1b[Kmin word length found: {min_word_length} | '
+                    'words found: {found} | last word searched: {word}\r')
     for k, word in enumerate(words):
         to_write = None
         if maybe == -1:
-            if available(word, proxies=proxies, is_404=True):
+            if available(word, proxies=proxies, twitter=twitter, is_404=True):
                 to_write = [word]
-                if not available(word, proxies=proxies):
+                if not available(word, proxies=proxies, twitter=twitter):
                     to_write.append('m')
         elif maybe == 0:
-            if available(word, proxies=proxies, is_404=True):
+            if available(word, proxies=proxies, twitter=twitter, is_404=True):
                 to_write = [word]
         elif maybe == 1:
-            if available(word, proxies=proxies):
+            if available(word, proxies=proxies, twitter=twitter):
                 to_write = [word]
         if to_write is not None:
             print '\t'.join(to_write)
@@ -142,6 +168,11 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__, 
                 formatter_class=argparse.RawDescriptionHelpFormatter)
     # Add command-line arguments
+    parser.add_argument('--github', '-g', action='store_const',
+            const=True,
+            default=False,
+            help='checks Github, not Twitter'
+        )
     parser.add_argument('--suppress-status', '-s', action='store_const',
             const=True,
             default=False,
@@ -205,5 +236,6 @@ if __name__ == '__main__':
                                         maybe=(-1 if args.maybe == 'annotate'
                                                 else (0 if args.maybe == 'yes'
                                                     else 1)
-                                                    )
-                                                )
+                                                    ),
+                                        twitter=(not args.github)
+                                    )
