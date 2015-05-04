@@ -48,7 +48,7 @@ Search Github, not Twitter:
 ```
 python nitwit.py -g >nitwits.txt
 ```
-If "<tab>m" follows a handle written to stdout, then while the handle has no account associated with it, Twitter/Github is currently blocking its registration. This may mean the handle will be available soon.
+If "<tab>m" follows a handle written to stdout, then while the handle has no account associated with it, Twitter/Github is currently blocking its registration. This could mean the handle will be available soon; it could also mean the handle is a reserved word.
 
 Search only for handles that have no associated accounts:
 ```
