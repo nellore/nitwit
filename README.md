@@ -15,14 +15,29 @@ curl -vs "http://twittercounter.com/pages/100" 2>&1 \
 Search for all three-letter Twitter handles in a random order:
 ```
 for i in {a..z}{a..z}{a..z} 
-    do echo $i
+do
+    echo $i
 done \
     | perl -MList::Util=shuffle -e 'print shuffle(<STDIN>);' \
     | python nitwit.py -d - >nitwits.txt
 ```
-Output only handles from default dictionary that can be registered on both Twitter and Github:
+Output only handles from `/usr/share/dict/words` that can be registered on both Twitter and Github:
 ```
 comm <(python nitwit.py -m no -g) <(python nitwit.py -m no)
+```
+Check the Twitter handle `i` every five seconds and beep insistently when it's available:
+```
+while true
+do
+    if [[ $(echo i | python nitwit.py -m no -d - -s) == "i" ]]; then
+        while true
+        do
+            tput bel;
+            sleep 5
+        done
+    fi
+    sleep 5
+done
 ```
 # Usage details
 Source Twitter search with `/usr/share/dict/words`, writing live stats to `stderr` and available handles to `nitwits.txt`:
