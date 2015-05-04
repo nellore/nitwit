@@ -77,32 +77,6 @@ def available(username, proxies={}, is_404=False):
         raise
     return to_return
 
-def is_404(username, proxies={}):
-    """ Checks if Twitter username returns 404.
-
-        username: string with username
-        proxies: keyword argument "proxies" of requests.get()
-
-        Return value: True if username is available; else False.
-    """
-    request = requests.get(
-                'http://twitter.com/users/username_available?username='
-                + urllib.quote_plus(username),
-                proxies=proxies
-            )
-    try:
-        to_return = request.json()['valid']
-    except ValueError:
-        if request.status_code == 429:
-            raise RuntimeError('Twitter\'s spouting 429s; too many requests '
-                               'are being made of the server. Wait a while, '
-                               'or download Tor '
-                               '(https://www.torproject.org/), set up a '
-                               'SOCKS5 proxy, and specify its port at the '
-                               'command line with "-p".')
-        raise
-    return to_return
-
 def write_available_usernames(words, suppress_status=False, proxy=None,
                                 wait=0.25, maybe=-1):
     """ Writes word if it is an available Twitter username.
