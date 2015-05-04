@@ -9,11 +9,11 @@ If "<tab>m" follows a username written, then while the username has no account a
 
 Search only for whether usernames have no associated accounts:
 ```
-python nitwit.py -m yes
+python nitwit.py -m yes >nitwits.txt
 ```
 Search only for whether usernames can be registered:
 ```
-python nitwit.py -m no
+python nitwit.py -m no >nitwits.txt
 ```
 Search for words in `mydict.txt`, a text file with a single word per line, in a random order:
 ```
