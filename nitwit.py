@@ -2,7 +2,7 @@
 """
 nitwit
 
-Searches Twitter/Github for usernames from word list. Reads words from 
+Searches Twitter/Github for handles from word list. Reads words from 
 /usr/share/dict/words by default. Requires the requests library.
 
 Licensed under the MIT License.
@@ -44,30 +44,30 @@ _error_429 = ('{service}\'s spouting 429s; too many requests are being made '
               'of the server. Wait a while, or download Tor '
               '(https://www.torproject.org/), set up a SOCKS5 proxy, and '
               'specify its port at the command line with "-p".')
-_max_twitter_username_length = 15
+_max_twitter_handle_length = 15
 
-def available(username, proxies={}, twitter=False, is_404=False):
-    """ Checks if Twitter/Github username is available.
+def available(handle, proxies={}, twitter=False, is_404=False):
+    """ Checks if Twitter/Github handle is available.
 
-        username: string with username
+        handle: string with handle
         proxies: keyword argument "proxies" of requests.get()
-        is_404: queries for username directly to check for 404; a 404 is
-            a necessary but not sufficient condition for username availability
+        is_404: queries for handle directly to check for 404; a 404 is
+            a necessary but not sufficient condition for handle availability
 
-        Return value: True if username is available; else False.
+        Return value: True if handle is available; else False.
     """
     if twitter:
         if is_404:
             request = requests.get(
-                        'http://twitter.com/' + urllib.quote_plus(username),
+                        'http://twitter.com/' + urllib.quote_plus(handle),
                         proxies=proxies
                     )
             if request.status_code == 429:
                 raise RuntimeError(_error_429.format(service='Twitter'))
             return (request.status_code == 404)
         request = requests.get(
-                    'http://twitter.com/users/username_available?username='
-                    + urllib.quote_plus(username),
+                    'http://twitter.com/users/handle_available?handle='
+                    + urllib.quote_plus(handle),
                     proxies=proxies
                 )
         try:
@@ -80,7 +80,7 @@ def available(username, proxies={}, twitter=False, is_404=False):
     # Github
     if is_404:
         request = requests.get(
-                    'http://github.com/' + urllib.quote_plus(username),
+                    'http://github.com/' + urllib.quote_plus(handle),
                     proxies=proxies
                 )
         if request.status_code == 429:
@@ -88,8 +88,8 @@ def available(username, proxies={}, twitter=False, is_404=False):
         return (request.status_code == 404)
     else:
         request = requests.post(
-                    'https://github.com/signup_check/username',
-                    'value=' + username,
+                    'https://github.com/signup_check/handle',
+                    'value=' + handle,
                     proxies=proxies
                 )
         if request.status_code == 403:
@@ -99,32 +99,32 @@ def available(username, proxies={}, twitter=False, is_404=False):
         elif request.status_code == 429:
             raise RuntimeError(_error_429.format(service='Github'))
     # Should not get here
-    raise RuntimeError('{} encountered checking username {} on Github.'.format(
-                                    request.status_code, username
+    raise RuntimeError('{} encountered checking handle {} on Github.'.format(
+                                    request.status_code, handle
                                 )
                     )
 
-def write_available_usernames(words, suppress_status=False, proxy=None,
+def write_available_handles(words, suppress_status=False, proxy=None,
                                 wait=0.25, maybe=-1, twitter=False):
-    """ Writes word if it is an available Twitter/Github username.
+    """ Writes word if it is an available Twitter/Github handle.
 
         words: iterable of words
         suppress_status: True if stats on search should not be printed to
             stderr
         proxies: None if no proxy is to be used; else https proxy IP
         wait: how long to wait (in s) between successive requests
-        maybe: -1 if a username should be annotated with "<tab>m" if it
+        maybe: -1 if a handle should be annotated with "<tab>m" if it
             has no associated account but is reported as unavailable; 0 if
-            all usernames with no associated accounts should be written;
-            1 if only usernames explicitly reported as available should be
+            all handles with no associated accounts should be written;
+            1 if only handles explicitly reported as available should be
             written
 
         No return value.
     """
-    # Username length restrictions go here
+    # handle length restrictions go here
     def length_criteria(word): return (
             not twitter
-            or twitter and len(word) <= _max_twitter_username_length
+            or twitter and len(word) <= _max_twitter_handle_length
         )
     if proxy is None:
         proxies = {}
@@ -207,7 +207,7 @@ if __name__ == '__main__':
         )
     parser.add_argument('--maybe', '-m', type=str,
             default='annotate',
-            help=('choose from among {"yes", "no", "annotate"). a username '
+            help=('choose from among {"yes", "no", "annotate"). a handle '
                   'with no associated account may be reported as unavailable.'
                   'if "yes", include it in output (1 request/word). if '
                   '"no", do not include it in output (1 request/word). if '
@@ -228,7 +228,7 @@ if __name__ == '__main__':
                                'data was found there. Specify a dictionary '
                                'file with "-d <file>", or pipe a command into '
                                'this script.')
-        write_available_usernames((line.strip().split('\t')[0] for line
+        write_available_handles((line.strip().split('\t')[0] for line
                                         in sys.stdin),
                                     suppress_status=args.suppress_status,
                                     proxy=args.proxy,
@@ -246,7 +246,7 @@ if __name__ == '__main__':
             )
     else:
         with open(args.dictionary) as dictionary_stream:
-            write_available_usernames((line.strip().split('\t')[0] for line
+            write_available_handles((line.strip().split('\t')[0] for line
                                         in dictionary_stream),
                                         suppress_status=args.suppress_status,
                                         proxy=args.proxy,
