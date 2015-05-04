@@ -1,11 +1,15 @@
 # nitwit v0.1.0
-Search Twitter for available usernames from a word list. Requires Python 2.x and <a href="http://docs.python-requests.org/en/latest/">requests<a>.
-# Usage
-Source search with `/usr/share/dict/words`, writing live stats to `stderr` and available usernames to `nitwits.txt`:
+Search Twitter or Github for available usernames from a word list. Requires Python 2.x and <a href="http://docs.python-requests.org/en/latest/">requests<a>.
+# Usage details
+Source Twitter search with `/usr/share/dict/words`, writing live stats to `stderr` and available usernames to `nitwits.txt`:
 ```
 python nitwit.py >nitwits.txt
 ```
-If "<tab>m" follows a username written, then while the username has no account associated with it, Twitter is currently blocking its registration. This may mean the username will be available soon.
+Search Github, not Twitter:
+```
+python nitwit.py -g >nitwits.txt
+```
+If "<tab>m" follows a username written, then while the username has no account associated with it, Twitter/Github is currently blocking its registration. This may mean the username will be available soon.
 
 Search only for whether usernames have no associated accounts:
 ```
@@ -17,7 +21,7 @@ python nitwit.py -m no >nitwits.txt
 ```
 Search for words in `mydict.txt`, a text file with a single word per line, in a random order:
 ```
-cat mydict.txt | perl -MList::Util=shuffle -e 'print shuffle(<STDIN>);' | python nitwit.py -d - >nitwits.txt
+cat mydict.txt | perl -MList::Util=shuffle -e 'print shuffle(<STDIN>);' | python nitwit.py -g -d - >nitwits.txt
 ```
 Use proxy `P` (useful in conjunction with Tor if getting <a href="http://en.wikipedia.org/wiki/List_of_HTTP_status_codes#4xx_Client_Error">429</a>'d):
 ```
