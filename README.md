@@ -9,7 +9,7 @@ curl -vs "http://twittercounter.com/pages/100" 2>&1 \
     | awk -F '"' '{print $2}' \
     | cut -c 2- \
     | uniq \
-    | awk '{print "TheReal" $0 }' \
+    | awk '{ print "TheReal" $0 }' \
     | python nitwit.py -d - >nitwits.txt
 ```
 Search for all three-letter Twitter handles in a random order:
