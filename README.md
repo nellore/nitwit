@@ -33,5 +33,8 @@ Suppress status messages written to stderr:
 ```
 python nitwit.py -s >nitwits.txt
 ```
+# License
+MIT. See `LICENSE` for details.
+
 # Disclaimer
 The author is not responsible for misuse or abuse of this product by other users.
