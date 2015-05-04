@@ -1,9 +1,19 @@
 # nitwit v0.1.0
 Search Twitter for available usernames from a word list. Requires Python 2.x and <a href="http://docs.python-requests.org/en/latest/">requests<a>.
 # Usage
-Source search with `/usr/share/dict/words`, writing live stats to `stderr` and words found to `nitwits.txt`:
+Source search with `/usr/share/dict/words`, writing live stats to `stderr` and available usernames found to `nitwits.txt`:
 ```
 python nitwit.py >nitwits.txt
+```
+If "<tab>m" follows a username written, then while the username has no account associated with it, Twitter is currently blocking its registration. This may mean the username will be available soon.
+
+Search only for whether usernames have no associated accounts:
+```
+python nitwit.py -m yes
+```
+Search only for whether usernames can be registered:
+```
+python nitwit.py -m no
 ```
 Search for words in `mydict.txt`, a text file with a single word per line, in a random order:
 ```
