@@ -12,6 +12,28 @@ curl -vs "http://twittercounter.com/pages/100" 2>&1 \
     | awk '{ print "TheReal" $0 }' \
     | python nitwit.py -d - >nitwits.txt
 ```
+Mutate one letter of the top 100 most-followed Twitter handles five times each handle and check availability:
+```
+curl -vs "http://twittercounter.com/pages/100" 2>&1 \
+    | grep "analytics.track('Viewed Profile'" \
+    | awk -F 'href' '{print $2}'\
+    | awk -F '"' '{print $2}' \
+    | cut -c 2- \
+    | uniq \
+    | python -c \
+'import random
+import sys
+import string
+import copy
+for word in sys.stdin:
+    word = list(word.strip());
+    for i in xrange(5):
+        new_word = copy.deepcopy(word)
+        new_word[random.randint(0, len(new_word) - 1)] = \
+            random.choice(string.ascii_lowercase)
+        print "".join(new_word)' \
+    | python nitwit.py -d - >nitwits.txt
+```
 Search for all three-letter Twitter handles in a random order:
 ```
 for i in {a..z}{a..z}{a..z} 
