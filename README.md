@@ -1,7 +1,7 @@
 # nitwit v0.1.0
 Search Twitter for available usernames from a word list. Requires Python 2.x and <a href="http://docs.python-requests.org/en/latest/">requests<a>.
 # Usage
-Source search with `/usr/share/dict/words`, writing live stats to `stderr` and available usernames found to `nitwits.txt`:
+Source search with `/usr/share/dict/words`, writing live stats to `stderr` and available usernames to `nitwits.txt`:
 ```
 python nitwit.py >nitwits.txt
 ```
