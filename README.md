@@ -45,7 +45,7 @@ done \
 ```
 Output only handles from `/usr/share/dict/words` that can be registered on both Twitter and Github:
 ```
-comm <(python nitwit.py -m no -g) <(python nitwit.py -m no)
+comm <(python nitwit.py -m no -g -s) <(python nitwit.py -m no -s)
 ```
 Check the Twitter handle `i` every five seconds and beep insistently when it's available:
 ```
