@@ -1,7 +1,7 @@
 # nitwit v0.1.0
 Search Twitter or Github for available handles from a word list. Requires Python 2.x and <a href="http://docs.python-requests.org/en/latest/">requests<a>.
 # Possibilities
-Search for "TheReal" + top 100 most-followed Twitter handles:
+Search for "TheReal" + top 100 most-followed Twitter handles:a
 ```
 curl -vs "http://twittercounter.com/pages/100" 2>&1 \
     | grep "analytics.track('Viewed Profile'" \
@@ -34,7 +34,7 @@ for word in sys.stdin:
         print "".join(new_word)' \
     | python nitwit.py -d - >nitwits.txt
 ```
-Search for all three-letter Twitter handles in a random order:
+Search for all three-letter Twitter handles in random order:
 ```
 for i in {a..z}{a..z}{a..z} 
 do
@@ -84,7 +84,7 @@ Search only for whether handles can be registered:
 ```
 python nitwit.py -m no >nitwits.txt
 ```
-Search for words in `mydict.txt`, a text file with a single word per line, in a random order:
+Search for words in `mydict.txt`, a text file with a single word per line, in random order:
 ```
 cat mydict.txt \
     | perl -MList::Util=shuffle -e 'print shuffle(<STDIN>);' \
