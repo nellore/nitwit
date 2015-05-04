@@ -66,7 +66,7 @@ def available(handle, proxies={}, twitter=False, is_404=False):
                 raise RuntimeError(_error_429.format(service='Twitter'))
             return (request.status_code == 404)
         request = requests.get(
-                    'http://twitter.com/users/handle_available?handle='
+                    'http://twitter.com/users/username_available?username='
                     + urllib.quote_plus(handle),
                     proxies=proxies
                 )
@@ -88,7 +88,7 @@ def available(handle, proxies={}, twitter=False, is_404=False):
         return (request.status_code == 404)
     else:
         request = requests.post(
-                    'https://github.com/signup_check/handle',
+                    'https://github.com/signup_check/username',
                     'value=' + handle,
                     proxies=proxies
                 )
