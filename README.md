@@ -5,7 +5,7 @@ Source search with `/usr/share/dict/words`, writing live stats to `stderr` and w
 ```
 python nitwit.py >nitwits.txt
 ```
-Search for words in `/usr/share/dict/words` in a random order:
+Search for words in `mydict.txt`, a text file with a single word per line, in a random order:
 ```
 cat /usr/share/dict/words | perl -MList::Util=shuffle -e 'print shuffle(<STDIN>);' | python nitwit.py -d >nitwits.txt
 ```
