@@ -33,7 +33,7 @@ do
         while true
         do
             tput bel
-            sleep 5
+            sleep 1
         done
     fi
     sleep 5
