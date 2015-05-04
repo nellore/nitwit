@@ -1,7 +1,7 @@
 # nitwit v0.1.0
 Search Twitter or Github for available handles from a word list. Requires Python 2.x and <a href="http://docs.python-requests.org/en/latest/">requests<a>.
 # Possibilities
-Search for "TheReal" + top 100 most-followed Twitter handles:a
+Search for "TheReal" + top 100 most-followed Twitter handles:
 ```
 curl -vs "http://twittercounter.com/pages/100" 2>&1 \
     | grep "analytics.track('Viewed Profile'" \
