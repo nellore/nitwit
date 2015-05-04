@@ -1,5 +1,29 @@
 # nitwit v0.1.0
 Search Twitter or Github for available usernames from a word list. Requires Python 2.x and <a href="http://docs.python-requests.org/en/latest/">requests<a>.
+# Possibilities
+Search for "TheReal" + top 100 most-followed Twitter handles:
+```
+curl -vs "http://twittercounter.com/pages/100" 2>&1 \
+    | grep "analytics.track('Viewed Profile'" \
+    | awk -F 'href' '{print $2}'\
+    | awk -F '"' '{print $2}' \
+    | cut -c 2- \
+    | uniq \
+    | awk '{print "TheReal" $0 }' \
+    | python nitwit.py -d - >nitwits.txt
+```
+Search for all three-letter Twitter handles in a random order:
+```
+for i in {a..z}{a..z}{a..z} 
+    do echo $i
+done \
+  | perl -MList::Util=shuffle -e 'print shuffle(<STDIN>);' \
+  | python nitwit.py -d - >nitwits.txt
+```
+Output only handles from default dictionary that can be registered on both Twitter and Github:
+```
+comm <(python nitwit.py -m no -g) <(python nitwit.py -m no)
+```
 # Usage details
 Source Twitter search with `/usr/share/dict/words`, writing live stats to `stderr` and available usernames to `nitwits.txt`:
 ```
