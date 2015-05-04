@@ -48,14 +48,15 @@ def available(username, proxies={}):
 
         Return value: True if username is available; else False.
     """
+    request = requests.get(
+                'http://twitter.com/users/username_available?username='
+                + urllib.quote_plus(username),
+                proxies=proxies
+            )
     try:
-        to_return = requests.get(
-                    'http://twitter.com/users/username_available?username='
-                    + urllib.quote_plus(username),
-                    proxies=proxies
-                ).json()['valid']
+        to_return = request.json()['valid']
     except ValueError:
-        if to_return.status_code == 429:
+        if request.status_code == 429:
             raise RuntimeError('Twitter\'s spouting 429s; too many requests '
                                'are being made of the server. Wait a while, '
                                'or download Tor '
@@ -63,6 +64,7 @@ def available(username, proxies={}):
                                'SOCKS5 proxy, and specify its port at the '
                                'command line with "-p".')
         raise
+    return to_return
 
 def write_available_usernames(words, suppress_status=False, proxy=None,
                                 wait=0.25):
