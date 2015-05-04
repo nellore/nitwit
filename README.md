@@ -1,5 +1,5 @@
 # nitwit v0.1.0
-Search Twitter or Github for available usernames from a word list. Requires Python 2.x and <a href="http://docs.python-requests.org/en/latest/">requests<a>.
+Search Twitter or Github for available handles from a word list. Requires Python 2.x and <a href="http://docs.python-requests.org/en/latest/">requests<a>.
 # Possibilities
 Search for "TheReal" + top 100 most-followed Twitter handles:
 ```
@@ -25,7 +25,7 @@ Output only handles from default dictionary that can be registered on both Twitt
 comm <(python nitwit.py -m no -g) <(python nitwit.py -m no)
 ```
 # Usage details
-Source Twitter search with `/usr/share/dict/words`, writing live stats to `stderr` and available usernames to `nitwits.txt`:
+Source Twitter search with `/usr/share/dict/words`, writing live stats to `stderr` and available handles to `nitwits.txt`:
 ```
 python nitwit.py >nitwits.txt
 ```
@@ -33,13 +33,13 @@ Search Github, not Twitter:
 ```
 python nitwit.py -g >nitwits.txt
 ```
-If "<tab>m" follows a username written, then while the username has no account associated with it, Twitter/Github is currently blocking its registration. This may mean the username will be available soon.
+If "<tab>m" follows a handle written to stdout, then while the handle has no account associated with it, Twitter/Github is currently blocking its registration. This may mean the handle will be available soon.
 
-Search only for whether usernames have no associated accounts:
+Search only for handles that have no associated accounts:
 ```
 python nitwit.py -m yes >nitwits.txt
 ```
-Search only for whether usernames can be registered:
+Search only for whether handles can be registered:
 ```
 python nitwit.py -m no >nitwits.txt
 ```
