@@ -17,8 +17,8 @@ Search for all three-letter Twitter handles in a random order:
 for i in {a..z}{a..z}{a..z} 
     do echo $i
 done \
-  | perl -MList::Util=shuffle -e 'print shuffle(<STDIN>);' \
-  | python nitwit.py -d - >nitwits.txt
+    | perl -MList::Util=shuffle -e 'print shuffle(<STDIN>);' \
+    | python nitwit.py -d - >nitwits.txt
 ```
 Output only handles from default dictionary that can be registered on both Twitter and Github:
 ```
@@ -45,7 +45,9 @@ python nitwit.py -m no >nitwits.txt
 ```
 Search for words in `mydict.txt`, a text file with a single word per line, in a random order:
 ```
-cat mydict.txt | perl -MList::Util=shuffle -e 'print shuffle(<STDIN>);' | python nitwit.py -g -d - >nitwits.txt
+cat mydict.txt \
+    | perl -MList::Util=shuffle -e 'print shuffle(<STDIN>);' \
+    | python nitwit.py -g -d - >nitwits.txt
 ```
 Use proxy `P` (useful in conjunction with Tor if getting <a href="http://en.wikipedia.org/wiki/List_of_HTTP_status_codes#4xx_Client_Error">429</a>'d):
 ```
