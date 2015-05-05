@@ -1,5 +1,5 @@
 # nitwit v0.1.0
-Search Twitter or Github for available handles from a word list. Requires Python 2.x and <a href="http://docs.python-requests.org/en/latest/">requests<a>.
+Scans Twitter or Github for available handles from a word list. Requires Python 2.x and <a href="http://docs.python-requests.org/en/latest/">requests<a>.
 # Possibilities
 Search for "TheReal" + top 100 most-followed Twitter handles:
 ```
