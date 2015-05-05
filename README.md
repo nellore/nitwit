@@ -12,7 +12,7 @@ curl -vs "http://twittercounter.com/pages/100" 2>&1 \
     | awk '{ print "TheReal" $0 }' \
     | python nitwit.py -d - >nitwits.txt
 ```
-Mutate one letter of the top 100 most-followed Twitter handles five times each handle and check availability:
+5x (mutate one letter of each of the top 100 most-followed Twitter handles and check availability):
 ```
 curl -vs "http://twittercounter.com/pages/100" 2>&1 \
     | grep "analytics.track('Viewed Profile'" \
