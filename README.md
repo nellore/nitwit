@@ -1,5 +1,7 @@
 # nitwit v0.1.0
 Scans Twitter or Github for available handles from a word list. Requires Python 2.x and <a href="http://docs.python-requests.org/en/latest/">requests<a>.
+# Important note
+`-m no` is a quick fix if the server starts returning <a href="http://en.wikipedia.org/wiki/List_of_HTTP_status_codes#4xx_Client_Error">429</a>s. Some handles may then be false positives if they are reserved keywords.
 # Possibilities
 Search for "TheReal" + top 100 most-followed Twitter handles:
 ```
